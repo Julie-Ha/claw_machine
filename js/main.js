@@ -17,17 +17,12 @@ claw.src = 'images/claw.png';
 lights.src = 'images/lights.png';
 bear.src = 'images/bear.png';
 
-console.log(claw.width);
 
 //Position centree de la pince
 let clawX = (canvas.width / 2) - (clawWidth / 2);
 
-// //Retourne une position aleatoire pour l'ours
-// const popBear = () => {
 
-// }
-
-const render = () => {
+function draw() {
 	ctx.drawImage(background, 0, 0);
 	ctx.drawImage(claw, 0, 0, claw.width, claw.height, clawX, 0, claw.width, claw.height);
 
@@ -37,4 +32,18 @@ const render = () => {
 	ctx.drawImage(lights, 0, 0);
 }
 
-window.onload = render;
+
+function update(time = 0) {
+	draw();
+	requestAnimationFrame(update);
+}
+
+document.addEventListener('keydown', event => {
+	if (event.keyCode === 37) {
+		clawX--;
+	} else if (event.keyCode == 39) {
+		clawX++;
+	}
+})
+
+update();
