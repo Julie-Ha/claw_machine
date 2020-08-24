@@ -20,7 +20,10 @@ bear.src = 'images/bear.png';
 
 //Position centree de la pince
 let clawX = (canvas.width / 2) - (clawWidth / 2);
-
+let velX = 0,
+    speed = 1.5, // max speed
+    friction = 0.92, // friction
+    keys = [];
 
 function draw() {
 	ctx.drawImage(background, 0, 0);
@@ -33,17 +36,48 @@ function draw() {
 }
 
 
-function update(time = 0) {
+function update() {
+
+	// check the keys and do the movement.    
+    if (keys[39]) {
+        if (velX < speed) {
+            velX++;
+        }
+    }
+    if (keys[37]) {
+        if (velX > -speed) {
+            velX--;
+        }
+    }
+
+    // apply some friction to x velocity.
+    velX *= friction;
+    clawX += velX;
+
+    // // bounds checking
+    // if (x >= 295) {
+    //     x = 295;
+    // } else if (x <= 5) {
+    //     x = 5;
+    // }
+
+    // if (y > 295) {
+    //     y = 295;
+    // } else if (y <= 5) {
+    //     y = 5;
+    // }
+
+
 	draw();
 	requestAnimationFrame(update);
 }
 
-document.addEventListener('keydown', event => {
-	if (event.keyCode === 37) {
-		clawX--;
-	} else if (event.keyCode == 39) {
-		clawX++;
-	}
-})
-
 update();
+
+// key events
+document.body.addEventListener("keydown", function (e) {
+    keys[e.keyCode] = true;
+});
+document.body.addEventListener("keyup", function (e) {
+    keys[e.keyCode] = false;
+});
