@@ -7,7 +7,7 @@ const claw = new Image();
 const lights = new Image();
 const bear = new Image();
 
-const clawWidth = 144;
+const clawWidth = 120;
 const boxX = 168;
 const boxWidth = 626;
 
@@ -54,18 +54,12 @@ function update() {
     velX *= friction;
     clawX += velX;
 
-    // // bounds checking
-    // if (x >= 295) {
-    //     x = 295;
-    // } else if (x <= 5) {
-    //     x = 5;
-    // }
-
-    // if (y > 295) {
-    //     y = 295;
-    // } else if (y <= 5) {
-    //     y = 5;
-    // }
+    // bounds checking
+    if (clawX + clawWidth >= boxX + boxWidth) {
+        clawX = boxX + boxWidth - clawWidth;
+    } else if (clawX <= boxX) {
+        clawX = boxX;
+    }
 
 
 	draw();
