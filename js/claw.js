@@ -6,6 +6,7 @@ class Claw {
 		this.y = 0;
 		this.sprite = 'img/claw.png';
 		this.state = 1;
+		this.bear = null;
 	}
 	update() {
 		//Etat 1: La pince se déplace normalement
@@ -42,19 +43,49 @@ class Claw {
 			velX = 0;
 
 			//La pince descend jusqu'à atteindre 1/6 de la hauteur de la machine
-			if (this.y == machine.height / 6) {
+			if (this.y > machine.height / 6) {
 				this.state = 3;
 			} else {
-				this.y++;
+				this.y += speed;
 			}
 		}
 
-		//Etat 3: La pince remonte avec ou sans ours
+		//Etat 3: Détection d'un ours
 		if (this.state == 3) {
-			if (this.y == 0) {
+
+			for (let i = 0; i < bearsArray.length; i++) {
+				if ((bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
+				  	this.state = 4;
+				  	this.bear = bearsArray[i];
+				  	this.bear.state = 2;
+				  	break;
+			  	}
+			}
+
+			if (this.y < 0) {
 				this.state = 1;
 			} else {
-				this.y--;
+				this.y -= speed;
+			}
+		}
+
+		//Etat 4: La pince remonte avec un ours
+		if (this.state == 4) {
+			if (this.y < 0) {
+				this.state = 5;
+			} else {
+				this.y -= speed;
+			}
+		}
+
+		//Etat 5: La pince se deplace vers la gauche et lache l'ours
+		if (this.state == 5) {
+			if (this.x > machine.width / 3 + this.width / 2) {
+				this.x -= speed;
+			} else {
+				this.state = 1;
+				this.bear.state = 3;
+				this.bear = null;
 			}
 		}
 		

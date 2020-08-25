@@ -2,7 +2,6 @@ const machine = new Machine();
 const claw = new Claw();
 
 const bearsArray = [];
-bearsArray.push(handleBears());
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
@@ -18,6 +17,7 @@ function draw() {
 
 function update() {
 
+    handleBears();
     claw.update();
 
     bearsArray.forEach(bear => bear.update());
