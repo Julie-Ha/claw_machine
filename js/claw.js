@@ -54,7 +54,7 @@ class Claw {
 		if (this.state == 3) {
 
 			for (let i = 0; i < bearsArray.length; i++) {
-				if ((bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
+				if ((bearsArray[i].state != 3) && (bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
 				  	this.state = 4;
 				  	this.bear = bearsArray[i];
 				  	this.bear.state = 2;
