@@ -7,7 +7,7 @@ class Bear {
 		this.sprite = 'img/bear.png';
 	}
 	update() {
-        
+
 	}
 	draw() {
 		let img = new Image();
@@ -15,3 +15,4 @@ class Bear {
 		ctx.drawImage(img, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
 	}
 }
+
