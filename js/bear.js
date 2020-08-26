@@ -14,13 +14,13 @@ class Bear {
             this.playSpawnAnimation();
         }
 
-        //Etat 2: attrapé
+        //Etat 2: Attrapé
         if (this.state == 2) {
             this.x = claw.x + claw.width / 2 - this.width / 2;
             this.y = claw.y + claw.height - this.height / 2;
         }
 
-        //Etat 3: relaché
+        //Etat 3: Relaché
         if (this.state == 3) {
             if (this.y < machine.height) {
                 this.y++;
@@ -54,18 +54,4 @@ class Bear {
     }
 }
 
-function generateRandomNumber(min, max) {
-    return Math.floor(Math.random() * (max - min)) + min;
-}
 
-function handleBears() {
-    if (bearsArray.length < bearsMax) {
-        bearsArray.push(new Bear());
-    }
-
-    for (let i = 0; i < bearsArray.length; i++) {
-        if (bearsArray[i].state == 0) {
-            bearsArray.splice(i, 1);
-        }
-    }
-}

@@ -5,26 +5,32 @@ const bearsArray = [];
 
 function draw() {
     ctx.clearRect(0, 0, canvas.width, canvas.height);
-	ctx.drawImage(background, 0, 0);
-
+    ctx.drawImage(background, 0, 0);
+    
     bearsArray.forEach(bear => bear.draw());
-
 	claw.draw();
 	machine.draw();
-
-	ctx.drawImage(lights, 0, 0);
 }
 
 function update() {
-
     handleBears();
     claw.update();
-
     bearsArray.forEach(bear => bear.update());
 
 	draw();
-	requestAnimationFrame(update);
+	window.requestAnimationFrame(update);
 }
 
 update();
 
+function handleBears() {
+    if (bearsArray.length < bearsMax) {
+        bearsArray.push(new Bear());
+    }
+
+    for (let i = 0; i < bearsArray.length; i++) {
+        if (bearsArray[i].state == 0) {
+            bearsArray.splice(i, 1);
+        }
+    }
+}
