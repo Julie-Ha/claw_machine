@@ -1,6 +1,8 @@
+@import url('https://fonts.googleapis.com/css2?family=Monda&display=swap');
+
 body {
-	margin: 0 auto;
-	font-family: Arial;
+	font-family: 'Monda', sans-serif;
+	margin: 0;
 	user-select: none;
 	background: #333;
 	display: flex;
@@ -9,6 +11,13 @@ body {
 	height: 100vh;
 }
 
-canvas {
+#canvas {
 	border: 3px solid #242526;
+}
+
+#score {
+	position: absolute;
+	font-size: 30px;
+	top: 20px;
+	color: #fff;
 }

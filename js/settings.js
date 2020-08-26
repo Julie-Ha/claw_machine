@@ -1,13 +1,13 @@
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', {alpha: false});
+const scoreSpan = document.getElementById('score');
+const bearsMax = 3;
 
+let score = 0;
 let background = new Image();
 background.src = 'img/background.png';
 
-const bearsMax = 3;
-let velX = 0;
-let speed = 3;
-let friction = 0.92;
+
 let keys = [];
 
 // key events

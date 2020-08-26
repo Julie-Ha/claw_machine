@@ -21,16 +21,19 @@ function update() {
 	window.requestAnimationFrame(update);
 }
 
-update();
-
+//Gère le nombre d'ours dans la machine
 function handleBears() {
+    //Ajoute un ours si le nombre max n'est pas atteint
     if (bearsArray.length < bearsMax) {
         bearsArray.push(new Bear());
     }
 
+    //Supprime les ours qui sont arrivés dans le trou de la machine
     for (let i = 0; i < bearsArray.length; i++) {
         if (bearsArray[i].state == 0) {
             bearsArray.splice(i, 1);
         }
     }
 }
+
+update();
