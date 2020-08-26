@@ -5,7 +5,6 @@ class Bear {
 		this.height = 72;
 		this.x = this.generatePositionX();
 		this.y = machine.height / 2 + this.height;
-        this.sprite = 'img/bear.png';
 
         //Etat de l'ours, 1: spawn, 2: attrapé, 3: relaché
         this.state = 1;
@@ -38,9 +37,7 @@ class Bear {
     }
     
 	draw() {
-		let img = new Image();
-		img.src = this.sprite;
-		ctx.drawImage(img, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+		ctx.drawImage(bearSprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
     }
     
     generatePositionX() {

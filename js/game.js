@@ -9,7 +9,8 @@ function draw() {
     
     bearsArray.forEach(bear => bear.draw());
 	claw.draw();
-	machine.draw();
+    machine.draw();
+    drawScore();
 }
 
 function update() {
@@ -34,6 +35,12 @@ function handleBears() {
             bearsArray.splice(i, 1);
         }
     }
+}
+
+function drawScore() {
+    ctx.fillStyle = 'black';
+    ctx.font = '20px Verdana';
+    ctx.fillText(`Score: ${ score }`, 450, 75);
 }
 
 update();

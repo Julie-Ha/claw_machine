@@ -4,7 +4,6 @@ class Claw {
 		this.height = 249;
 		this.x = (canvas.width / 2) - (this.width / 2);
 		this.y = 0;
-		this.sprite = 'img/claw.png';
 		this.state = 1;
 		this.bear = null; //L'ours attrapé
 		this.velX = 0;
@@ -41,9 +40,7 @@ class Claw {
 	}
 
 	draw() {
-		let img = new Image();
-		img.src = this.sprite;
-		ctx.drawImage(img, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
+		ctx.drawImage(clawSprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
 	}
 
 	move() {
@@ -90,7 +87,6 @@ class Claw {
 			//On vérifie si un ours se trouve dans la pince
 			if ((bearsArray[i].state != 3) && (bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
 					score++;
-					scoreSpan.innerHTML = `Score: ${ score }`;
 					this.state = 4; 
 					this.bear = bearsArray[i];
 					this.bear.state = 2; //L'ours est attrapé, il passe à l'état 2
