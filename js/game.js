@@ -39,8 +39,8 @@ function handleBears() {
 
 function drawScore() {
     ctx.fillStyle = 'black';
-    ctx.font = '20px Verdana';
-    ctx.fillText(`Score: ${ score }`, 450, 75);
+    ctx.font = '25px Verdana';
+    ctx.fillText(`Score: ${ score }`, 425, 75);
 }
 
 update();
