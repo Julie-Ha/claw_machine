@@ -7,7 +7,7 @@ class Claw {
 		this.state = 1;
 		this.bear = null; //L'ours attrapé
 		this.velX = 0;
-		this.speed = 3;
+		this.speed = 6;
 		this.friction = 0.92;
 	}
 
@@ -85,7 +85,7 @@ class Claw {
 	playUpAnimation() {
 		for (let i = 0; i < bearsArray.length; i++) {
 			//On vérifie si un ours se trouve dans la pince
-			if ((bearsArray[i].state != 3) && (bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
+			if ((bearsArray[i].state != 3) && (bearsArray[i].catchable) && (bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
 					score++;
 					this.state = 4; 
 					this.bear = bearsArray[i];

@@ -11,28 +11,31 @@ class Bear {
 
         //La hauteur à laquelle l'ours va spawner (générer aléatoiremenr)
         this.spawnHeight = this.generateSpawnHeight();
+
+        this.catchable = true;
+        this.speed = 1;
     }
     
 	update() {
-        //Etat 1: L'ours spawn
-        if (this.state == 1) {
-            this.playSpawnAnimation();
-        }
-
-        //Etat 2: L'ours est attrapé, il se déplace en fonction de la pince
-        if (this.state == 2) {
-            this.x = claw.x + claw.width / 2 - this.width / 2;
-            this.y = claw.y + claw.height - this.height / 2;
-        }
-
-        //Etat 3: Relaché
-        if (this.state == 3) {
-            if (this.y < machine.height) {
-                this.y++;
+        if (this.catchable) {
+            //Etat 1: L'ours spawn
+            if (this.state == 1) {
+                this.playSpawnAnimation();
             }
-            else {
-                this.state = 0;
+
+            //Etat 2: L'ours est attrapé, il se déplace en fonction de la pince
+            if (this.state == 2) {
+                this.x = claw.x + claw.width / 2 - this.width / 2;
+                this.y = claw.y + claw.height - this.height / 2;
             }
+
+            //Etat 3: Relaché
+            if (this.state == 3) {
+                this.playFallAnimation();
+            }
+        }
+        else {
+            this.playFallAnimation();
         }
     }
     
@@ -54,9 +57,18 @@ class Bear {
     
     playSpawnAnimation() {
         if (this.y > this.spawnHeight) {
-            this.y--;
+            this.y -= this.speed;
         } else {
             this.state = 1;
+        }
+    }
+
+    playFallAnimation() {
+        if (this.y < machine.height) {
+            this.y += this.speed;
+        }
+        else {
+            this.state = 0;
         }
     }
 }
