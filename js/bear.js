@@ -6,8 +6,10 @@ class Bear {
 		this.x = this.generatePositionX();
 		this.y = machine.height / 2 + this.height;
 
-        //Etat de l'ours, 1: spawn, 2: attrapé, 3: relaché
-        this.state = 1;
+        //Etat de l'ours, 0: par defaut, 1: spawn, 2: attrapé, 3: relaché, 4: a supprimer
+        this.state = 0;
+
+        this.behavior = 0;
 
         //La hauteur à laquelle l'ours va spawner (générer aléatoiremenr)
         this.spawnHeight = this.generateSpawnHeight();
@@ -19,7 +21,7 @@ class Bear {
 	update() {
         if (this.catchable) {
             //Etat 1: L'ours spawn
-            if (this.state == 1) {
+            if (this.state == 0) {
                 this.playSpawnAnimation();
             }
 
@@ -68,7 +70,7 @@ class Bear {
             this.y += this.speed;
         }
         else {
-            this.state = 0;
+            this.state = 4;
         }
     }
 }

@@ -13,7 +13,7 @@ function draw() {
 
     drawScore('black');
 
-    if ((score != 0) && (score % 5 == 0)) {
+    if ((score != 0) && ((score % 5 == 0) || ((score % 3 == 0)))) {
         drawScore('white');
     } 
 }
@@ -24,11 +24,14 @@ function update() {
     if ((score != 0) && (score % 5 == 0)) {
         playRainBearsAnimation();
     }
+    else if ((score != 0) && (score % 3 == 0)) {
+        playJumpingBearsAnimation();
+    }
     
     handleBears();
 
     claw.update();
-    bearsArray.forEach(bear => bear.update());
+    bearsArray.map(bear => bear.update());
 
 	draw();
 	window.requestAnimationFrame(update);
@@ -49,7 +52,7 @@ function handleBears() {
 
     //Supprime les ours qui sont arrivés dans le trou de la machine
     for (let i = 0; i < bearsArray.length; i++) {
-        if (bearsArray[i].state == 0) {
+        if (bearsArray[i].state == 4) {
             bearsArray.splice(i, 1);
         }
     }
@@ -68,6 +71,23 @@ function playRainBearsAnimation() {
             bear.catchable = false;
 
             bearsArray.push(bear);
+        }
+    }
+}
+
+//Fait pleuvoir des ours dans la machine
+function playJumpingBearsAnimation() {
+    if (bearsArray.length < 50) {
+        if(frame % 8 == 0) {
+            let bear = new Bear();
+            // bear.catchable = false;
+
+            bearsArray.push(bear);
+        }
+        for (let i = 0; i < bearsArray.length; i++) {
+            if (bearsArray[i].state == 1) {
+                bearsArray[i].state = 3;
+            }
         }
     }
 }

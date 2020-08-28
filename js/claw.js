@@ -7,7 +7,7 @@ class Claw {
 		this.state = 1;
 		this.bear = null; //L'ours attrapé
 		this.velX = 0;
-		this.speed = 6;
+		this.speed = 5;
 		this.friction = 0.92;
 	}
 
