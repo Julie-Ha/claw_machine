@@ -1,8 +1,8 @@
+'use strict';
+
 const canvas = document.getElementById('canvas');
 const ctx = canvas.getContext('2d', {alpha: false});
 const scoreSpan = document.getElementById('score');
-
-const bearsMax = 5;
 
 let score = 0;
 let frame = 0;

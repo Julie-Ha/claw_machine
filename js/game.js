@@ -1,95 +1,37 @@
 const machine = new Machine();
-const claw = new Claw();
-
-const bearsArray = [];
 
 function draw() {
-    ctx.clearRect(0, 0, canvas.width, canvas.height);
-    ctx.drawImage(background, 0, 0);
-    
-    bearsArray.forEach(bear => bear.draw());
-	claw.draw();
-    machine.draw();
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  ctx.drawImage(background, 0, 0);
 
-    drawScore('black');
+  machine.draw();
 
-    if ((score != 0) && ((score % 5 == 0) || ((score % 3 == 0)))) {
-        drawScore('white');
-    } 
+  drawScore("black");
+
+  if (score != 0 && (score % 5 == 0 || score % 7 == 0)) {
+    drawScore("white");
+  }
 }
 
 function update() {
-    frame++;
+  frame++;
 
-    if ((score != 0) && (score % 5 == 0)) {
-        playRainBearsAnimation();
-    }
-    else if ((score != 0) && (score % 3 == 0)) {
-        playJumpingBearsAnimation();
-    }
-    
-    handleBears();
+  if (score != 0 && score % 5 == 0) {
+    machine.playRainBearsAnimation();
+  } else if (score != 0 && score % 7 == 0) {
+    machine.playJumpingBearsAnimation();
+  }
 
-    claw.update();
-    bearsArray.map(bear => bear.update());
+  machine.update();
 
-	draw();
-	window.requestAnimationFrame(update);
+  draw();
+  window.requestAnimationFrame(update);
 }
 
 function drawScore(color) {
-    ctx.fillStyle = color;
-    ctx.font = '25px Verdana';
-    ctx.fillText(`Score: ${ score }`, 425, 75);
-}
-
-//Gère le nombre d'ours dans la machine
-function handleBears() {
-    //Ajoute un ours si le nombre max n'est pas atteint
-    if (bearsArray.length < bearsMax) {
-        bearsArray.push(new Bear());
-    }
-
-    //Supprime les ours qui sont arrivés dans le trou de la machine
-    for (let i = 0; i < bearsArray.length; i++) {
-        if (bearsArray[i].state == 4) {
-            bearsArray.splice(i, 1);
-        }
-    }
-}
-
-//Fait pleuvoir des ours dans la machine
-function playRainBearsAnimation() {
-    if (bearsArray.length < 100) {
-        if(frame % 3 == 0) {
-            let bear = new Bear();
-            let min = machine.xWin;
-            let max = machine.xWin + machine.widthWin - bear.width;
-            bear.x = generateRandomNumber(min, max);
-            bear.y = 0;
-            bear.speed = Math.random() * 3 + 1;
-            bear.catchable = false;
-
-            bearsArray.push(bear);
-        }
-    }
-}
-
-//Fait pleuvoir des ours dans la machine
-function playJumpingBearsAnimation() {
-    if (bearsArray.length < 50) {
-        if(frame % 8 == 0) {
-            let bear = new Bear();
-            // bear.catchable = false;
-
-            bearsArray.push(bear);
-        }
-        for (let i = 0; i < bearsArray.length; i++) {
-            if (bearsArray[i].state == 1) {
-                bearsArray[i].state = 3;
-            }
-        }
-    }
+  ctx.fillStyle = color;
+  ctx.font = "25px Verdana";
+  ctx.fillText(`Score: ${score}`, 425, 75);
 }
 
 update();

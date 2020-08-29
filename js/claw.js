@@ -1,123 +1,125 @@
 class Claw {
-	constructor() {
-		this.width = 120;
-		this.height = 249;
-		this.x = (canvas.width / 2) - (this.width / 2);
-		this.y = 0;
-		this.state = 1;
-		this.bear = null; //L'ours attrapé
-		this.velX = 0;
-		this.speed = 5;
-		this.friction = 0.92;
-	}
+  constructor() {
+    this.width = 120;
+    this.height = 249;
+    this.x = canvas.width / 2 - this.width / 2;
+    this.y = 0;
+    this.state = new DefaultClawState(this);
+    this.bear = null; //L'ours attrapé
+    this.velX = 0;
+    this.speed = 5;
+    this.friction = 0.92;
+  }
 
-	update() {
-		//Etat 1: La pince se déplace normalement
-		if (this.state == 1) { 
-			this.move();
-		}
+  update() {
+    this.state.handleBehavior();
+  }
 
-		//Etat 2: La pince essaie d'attraper un ours
-		if (this.state == 2) {
-			this.playDownAnimation();
-		}
+  draw() {
+    ctx.drawImage(
+      clawSprite,
+      0,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
 
-		//Etat 3: Détection d'un ours et mouvement vers le haut
-		if (this.state == 3) {
-			this.playUpAnimation();
-		}
+  catchBear() {
+    for (let i = 0; i < machine.bears.length; i++) {
+      //On vérifie si un ours se trouve dans la pince
+      if (
+        machine.bears[i].catchable &&
+        machine.bears[i].x > this.x &&
+        machine.bears[i].x + machine.bears[i].width < this.x + this.width
+      ) {
+        score++;
+        this.bear = machine.bears[i];
+        this.bear.state = new CaughtState(this.bear);
+        break;
+      }
+    }
+  }
+}
 
-		//Etat 4: La pince remonte avec un ours
-		if (this.state == 4) {
-			this.playUpWithBearAnimation();
-		}
+//Pattern State
+class ClawState {
+  constructor(claw) {
+    this.claw = claw;
+  }
+}
 
-		//Etat 5: La pince se deplace vers la gauche et lache l'ours
-		if (this.state == 5) {
-			this.playLeftAnimation();
-		}
-		
-	}
+class DefaultClawState extends ClawState {
+  handleBehavior() {
+    if (keys[39]) {
+      if (this.claw.velX < this.claw.speed) {
+        this.claw.velX++;
+      }
+    }
+    if (keys[37]) {
+      if (this.claw.velX > -this.claw.speed) {
+        this.claw.velX--;
+      }
+    }
+    if (keys[32]) {
+      //Si le joueur appuie sur la barre espace
+      //On passe à l'état dans lequel la pince descend
+      this.claw.state = new GoDownState(this.claw); 
+    }
 
-	draw() {
-		ctx.drawImage(clawSprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
-	}
+    // Permet à la pince de bouger de manière fluide
+    // et de continuer à bouger un peu lorsqu'une flèche directionnelle est relachée
+    this.claw.velX *= this.claw.friction;
+    this.claw.x += this.claw.velX;
 
-	move() {
-		if (keys[39]) {
-			if (this.velX < this.speed) {
-				this.velX++;
-			}
-		}
-		if (keys[37]) {
-			if (this.velX > -this.speed) {
-				this.velX--;
-			}
-		}
-		if (keys[32]) { //Si le joueur appuie sur la barre espace 
-			this.state = 2; //On passe à l'état 2
-		}
+    // Vérification des bords de la machine
+    if (this.claw.x + this.claw.width >= machine.xWin + machine.widthWin) {
+      this.claw.x = machine.xWin + machine.widthWin - this.claw.width;
+    } else if (this.claw.x <= machine.xWin) {
+      this.claw.x = machine.xWin;
+    }
+  }
+}
 
-		// Permet à la pince de bouger de manière fluide 
-		// et de continuer à bouger un peu lorsqu'une flèche directionnelle est relachée
-		this.velX *= this.friction;
-		this.x += this.velX;
+class GoDownState extends ClawState {
+  handleBehavior() {
+    //Réinitialisation de la velocité sinon la pince bouge lorsqu'elle a fini de remonter
+    this.claw.velX = 0;
+    if (this.claw.y > machine.height / 6) {
+      //On passe à l'état dans lequel la pince monte
+      this.claw.state = new GoUpState(this.claw); 
+      this.claw.catchBear();
+    } else {
+      this.claw.y += this.claw.speed;
+    }
+  }
+}
 
-		// Vérification des bords de la machine
-		if (this.x + this.width >= machine.xWin + machine.widthWin) {
-			this.x = machine.xWin + machine.widthWin - this.width;
-		} else if (this.x <= machine.xWin) {
-			this.x = machine.xWin;
-		}
-	}
+class GoUpState extends ClawState {
+  handleBehavior() {
+    if (this.claw.y < 0) {
+      //Si un ours est attrapé, la pince se dirige à gauche sinon elle reprend son comportement par défaut
+      this.claw.state = this.claw.bear
+        ? new GoLeftState(this.claw)
+        : new DefaultClawState(this.claw);
+    } else {
+      this.claw.y -= this.claw.speed;
+    }
+  }
+}
 
-	playDownAnimation() {
-		//Réinitialisation de la velocité sinon la pince bouge lorsqu'elle a fini de remonter
-		this.velX = 0;
-
-		if (this.y > machine.height / 6) {
-			this.state = 3;
-		} else {
-			this.y += this.speed;
-		}
-	}
-
-	playUpAnimation() {
-		for (let i = 0; i < bearsArray.length; i++) {
-			//On vérifie si un ours se trouve dans la pince
-			if ((bearsArray[i].state != 3) && (bearsArray[i].catchable) && (bearsArray[i].x > this.x) && (bearsArray[i].x + bearsArray[i].width < this.x + this.width)) {
-					score++;
-					this.state = 4; 
-					this.bear = bearsArray[i];
-					this.bear.state = 2; //L'ours est attrapé, il passe à l'état 2
-					break;
-			  }
-		}
-
-		//Si on est ici, c'est qu'aucun ours n'a été attrapé, on remonte la pince
-		if (this.y < 0) {
-			this.state = 1;
-		} else {
-			this.y -= this.speed;
-		}
-	}
-
-	playUpWithBearAnimation() {
-		if (this.y < 0) {
-			this.state = 5;
-		} else {
-			this.y -= this.speed;
-		}
-	}
-
-	playLeftAnimation() {
-		//La pince se dirige vers le trou de la machine pour relacher l'ours
-		if (this.x > machine.width / 3 + this.width / 2) {
-			this.x -= this.speed;
-		} else {
-			this.state = 1;
-			this.bear.state = 3;
-			this.bear = null;
-		}
-	}
+class GoLeftState extends ClawState {
+  handleBehavior() {
+    if (this.claw.x > machine.width / 3 + this.claw.width / 2) {
+      this.claw.x -= this.claw.speed;
+    } else {
+      this.claw.state = new DefaultClawState(this.claw);
+      this.claw.bear.state = new FallState(this.claw.bear);
+      this.claw.bear = null;
+    }
+  }
 }

@@ -1,78 +1,104 @@
 class Bear {
+  constructor() {
+    this.width = 72;
+    this.height = 72;
+    this.x = this.generatePositionX();
+    this.y = machine.height / 2 + this.height;
 
-	constructor() {
-		this.width = 72;
-		this.height = 72;
-		this.x = this.generatePositionX();
-		this.y = machine.height / 2 + this.height;
+    this.state = new SpawnState(this);
 
-        //Etat de l'ours, 0: par defaut, 1: spawn, 2: attrapé, 3: relaché, 4: a supprimer
-        this.state = 0;
+    //La hauteur à laquelle l'ours va spawner (générer aléatoiremenr)
+    this.spawnHeight = this.generateSpawnHeight();
 
-        this.behavior = 0;
+    this.released = false;
+    this.catchable = true;
+    this.speed = 1;
+  }
 
-        //La hauteur à laquelle l'ours va spawner (générer aléatoiremenr)
-        this.spawnHeight = this.generateSpawnHeight();
+  update() {
+    this.state.handleBehavior();
+  }
 
-        this.catchable = true;
-        this.speed = 1;
+  draw() {
+    ctx.drawImage(
+      bearSprite,
+      0,
+      0,
+      this.width,
+      this.height,
+      this.x,
+      this.y,
+      this.width,
+      this.height
+    );
+  }
+
+  generatePositionX() {
+    let min = machine.xWin + machine.widthWin / 2 - this.width;
+    let max = machine.xWin + machine.widthWin - this.width;
+    return generateRandomNumber(min, max);
+  }
+
+  generateSpawnHeight() {
+    let min = machine.height / 2 + this.height / 2;
+    let max = machine.height / 2 + this.height / 8;
+    return generateRandomNumber(min, max);
+  }
+
+  playSpawnAnimation() {
+    this.y > this.spawnHeight
+      ? (this.y -= this.speed)
+      : (this.state = new DefaultBearState(this));
+  }
+
+  playJumpAnimation() {
+    this.y > this.spawnHeight
+      ? (this.y -= this.speed)
+      : (this.state = new FallState(this));
+  }
+
+  playFallAnimation() {
+    if (this.y < machine.height) {
+      this.y += this.speed;
+    } else {
+      this.state = new DefaultBearState(this);
+      this.released = true;
     }
-    
-	update() {
-        if (this.catchable) {
-            //Etat 1: L'ours spawn
-            if (this.state == 0) {
-                this.playSpawnAnimation();
-            }
-
-            //Etat 2: L'ours est attrapé, il se déplace en fonction de la pince
-            if (this.state == 2) {
-                this.x = claw.x + claw.width / 2 - this.width / 2;
-                this.y = claw.y + claw.height - this.height / 2;
-            }
-
-            //Etat 3: Relaché
-            if (this.state == 3) {
-                this.playFallAnimation();
-            }
-        }
-        else {
-            this.playFallAnimation();
-        }
-    }
-    
-	draw() {
-		ctx.drawImage(bearSprite, 0, 0, this.width, this.height, this.x, this.y, this.width, this.height);
-    }
-    
-    generatePositionX() {
-        let min = machine.xWin + machine.widthWin / 2 - this.width;
-        let max = machine.xWin + machine.widthWin - this.width;
-        return generateRandomNumber(min, max);
-    }
-
-    generateSpawnHeight() {
-        let min = machine.height / 2 + this.height / 2;
-        let max = machine.height / 2 + this.height / 8;
-        return generateRandomNumber(min, max);
-    }
-    
-    playSpawnAnimation() {
-        if (this.y > this.spawnHeight) {
-            this.y -= this.speed;
-        } else {
-            this.state = 1;
-        }
-    }
-
-    playFallAnimation() {
-        if (this.y < machine.height) {
-            this.y += this.speed;
-        }
-        else {
-            this.state = 4;
-        }
-    }
+  }
 }
 
+//Pattern State
+class BearState {
+  constructor(bear) {
+    this.bear = bear;
+  }
+}
 
+class DefaultBearState extends BearState {
+  handleBehavior() {}
+}
+
+class SpawnState extends BearState {
+  handleBehavior() {
+    this.bear.playSpawnAnimation();
+  }
+}
+
+class CaughtState extends BearState {
+  handleBehavior() {
+    this.bear.x = machine.claw.x + machine.claw.width / 2 - this.bear.width / 2;
+    this.bear.y = machine.claw.y + machine.claw.height - this.bear.height / 2;
+  }
+}
+
+class FallState extends BearState {
+  handleBehavior() {
+    this.bear.playFallAnimation();
+  }
+}
+
+class JumpState extends BearState {
+  handleBehavior() {
+    this.bear.playJumpAnimation();
+  }
+}
