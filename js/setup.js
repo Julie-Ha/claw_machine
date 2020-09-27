@@ -28,7 +28,7 @@ document.body.addEventListener("keydown", function (e) {
     keys[e.keyCode] = true;
 
     if(showCommands) {
-        document.getElementById("commands").classList.add('hide');
+        document.getElementById("controls").classList.add('hide');
         showCommands = false;
     }
 });
