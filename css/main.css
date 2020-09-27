@@ -21,3 +21,20 @@ body {
 	top: 20px;
 	color: #fff;
 }
+
+#commands {
+	padding: 6rem;
+	background-color: rgba(0, 0, 0, 0.6);
+	color: white;
+	position: absolute;
+	font-size: 22px;
+}
+
+.hide {
+	opacity: 0;
+	transition: 0.3s;
+}
+
+h1 {
+	text-align: center;
+}
